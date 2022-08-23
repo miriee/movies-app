@@ -1,40 +1,54 @@
 import React from "react";
 import Movie from "./movie";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function ListMovies() {
   const [listfilm, setListfilm] = useState([]);
   const [error, setError] = useState();
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "cda3576cd1msh7d3217b4fc7e9f0p1c8ab1jsnf97a47123d09",
-      "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com",
-    },
+  // const options = {
+  //   method: "GET",
+  //   url: "http://omdbapi.com/?s=marvel&apikey=339b64b7",
+  //   params: { q: "game of thr" },
+  //   headers: {
+  //     "X-RapidAPI-Key": "f8a6723a65mshe461129648e12ecp1fff88jsnd3d3b35c979d",
+  //     "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com",
+  //   },
+  // };
+
+  // with Axios
+  const url = "http://omdbapi.com/?s=marvel&apikey=339b64b7";
+
+  const getMovies = async () => {
+    await axios(url).then((response) => {
+      setListfilm(response.data.Search);
+    });
   };
   useEffect(() => {
-    fetch(
-      "https://online-movie-database.p.rapidapi.com/auto-complete?q=game%of%thr",
-      options
-    )
-      .then((response) => response.json())
-      // .then((response) => console.log(response.d))
-      .then((response) => setListfilm(response.d))
-      .catch((err) => {
-        setError(err.message);
-        setListfilm();
-      });
+    getMovies();
+
+    // fetch(
+    //   "https://online-movie-database.p.rapidapi.com/auto-complete?q=game%of%thr",
+    //   options
+    // )
+    //   .then((response) => response.json())
+    //   // .then((response) => console.log(response.d))
+    //   .then((response) => setListfilm(response.d))
+    //   .catch((err) => {
+    //     setError(err.message);
+    //     setListfilm();
+    //   });
   }, []);
+
   return (
     <div className="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-      
       {listfilm.map((movie, index) => {
         return (
           <Movie
             key={index}
-            url={movie.i.imageUrl}
-            title={movie.l}
-            description={movie.q}
+            url={movie.Poster}
+            title={movie.Title}
+            description={movie.Type}
           />
         );
       })}
